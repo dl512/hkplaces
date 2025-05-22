@@ -117,36 +117,19 @@
     </div>
 
     <script>
-        const SPREADSHEET_ID = '1ENFqmRfBAlx8Ue24iqM1m_Myh7kZbB9OLshrTfiWnRE';
-        const SHEET_NAME = 'Form Responses 1';
-        
-        // Get API key from server
-        async function getApiKey() {
-            try {
-                const response = await fetch('/api/key');
-                const data = await response.json();
-                return data.apiKey;
-            } catch (error) {
-                console.error('Error getting API key:', error);
-                throw error;
-            }
-        }
+        let SPREADSHEET_ID = '1ENFqmRfBAlx8Ue24iqM1m_Myh7kZbB9OLshrTfiWnRE';
+        let API_KEY = 'AIzaSyCPyerGljBK4JJ-XA3aRr5cRvWssI3rwhI';
+        let SHEET_NAME = 'Form Responses 1';
 
         async function fetchGoogleSheet() {
-            const API_KEY = await getApiKey();
-            
-            if (!API_KEY) {
-                throw new Error('API key not found');
-            }
-
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${SHEET_NAME}!B1:K?key=${API_KEY}`;
+            let url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${SHEET_NAME}!B1:K?key=${API_KEY}`;
             
             try {
-                const response = await fetch(url);
+                let response = await fetch(url);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                const data = await response.json();
+                let data = await response.json();
                 return data.values || [];
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -155,7 +138,7 @@
         }
 
         function createQuestionCard(question, answer, index) {
-            const card = document.createElement('div');
+            let card = document.createElement('div');
             card.className = 'card';
             card.style.animationDelay = `${index * 0.1}s`;
             
@@ -168,10 +151,10 @@
         }
 
         async function displayQuestions() {
-            const container = document.getElementById('questions-container');
+            let container = document.getElementById('questions-container');
             container.innerHTML = '<div class="loading">Loading questions...</div>';
             
-            const rows = await fetchGoogleSheet();
+            let rows = await fetchGoogleSheet();
             
             if (rows.length < 2) {
                 container.innerHTML = '<div class="loading">No questions found</div>';
@@ -179,15 +162,15 @@
             }
             
             // First row contains questions
-            const questions = rows[0];
+            let questions = rows[0];
             // Second row contains answers
-            const answers = rows[1];
+            let answers = rows[1];
             
             container.innerHTML = '';
             
             questions.forEach((question, index) => {
                 if (question && answers[index]) {
-                    const card = createQuestionCard(question, answers[index], index);
+                    let card = createQuestionCard(question, answers[index], index);
                     container.appendChild(card);
                     // Trigger animation
                     setTimeout(() => card.classList.add('visible'), 50);
