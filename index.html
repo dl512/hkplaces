@@ -118,11 +118,27 @@
 
     <script>
         const SPREADSHEET_ID = '1ENFqmRfBAlx8Ue24iqM1m_Myh7kZbB9OLshrTfiWnRE';
-        const API_KEY = 'AIzaSyCPyerGljBK4JJ-XA3aRr5cRvWssI3rwhI';
         const SHEET_NAME = 'Form Responses 1';
+        
+        // Get API key from server
+        async function getApiKey() {
+            try {
+                const response = await fetch('/api/key');
+                const data = await response.json();
+                return data.apiKey;
+            } catch (error) {
+                console.error('Error getting API key:', error);
+                throw error;
+            }
+        }
 
         async function fetchGoogleSheet() {
-            // Fetch both questions (row 1) and responses (row 2 onwards)
+            const API_KEY = await getApiKey();
+            
+            if (!API_KEY) {
+                throw new Error('API key not found');
+            }
+
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${SHEET_NAME}!B1:K?key=${API_KEY}`;
             
             try {
