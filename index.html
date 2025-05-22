@@ -36,7 +36,7 @@
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
             padding: 25px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             transform: translateY(0);
             transition: transform 0.3s ease;
@@ -52,15 +52,42 @@
         }
 
         .question {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             color: #333;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             font-weight: 600;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed rgba(0, 0, 0, 0.1);
         }
 
         .answer {
             color: #666;
             line-height: 1.6;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            border-left: 4px solid #a777e3;
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .answer:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .answer:last-child {
+            margin-bottom: 0;
+        }
+
+        .answers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
         }
 
         .card:nth-child(odd) {
@@ -86,6 +113,14 @@
 
             .question {
                 font-size: 1.1rem;
+            }
+
+            .answers {
+                grid-template-columns: 1fr;
+            }
+            
+            .answer {
+                padding: 12px;
             }
         }
 
@@ -163,14 +198,30 @@
             
             // First row contains questions
             let questions = rows[0];
-            // Second row contains answers
-            let answers = rows[1];
+            // All other rows contain answers
+            let answers = rows.slice(1);
             
             container.innerHTML = '';
             
-            questions.forEach((question, index) => {
-                if (question && answers[index]) {
-                    let card = createQuestionCard(question, answers[index], index);
+            questions.forEach((question, questionIndex) => {
+                if (question) {
+                    // Create a card for each question
+                    let card = document.createElement('div');
+                    card.className = 'card';
+                    card.style.animationDelay = `${questionIndex * 0.1}s`;
+                    
+                    // Add question and answers
+                    card.innerHTML = `
+                        <div class="question">${question}</div>
+                        <div class="answers">
+                            ${answers.map((answerRow, rowIndex) => 
+                                answerRow[questionIndex] ? 
+                                `<div class="answer">${answerRow[questionIndex]}</div>` 
+                                : ''
+                            ).join('')}
+                        </div>
+                    `;
+                    
                     container.appendChild(card);
                     // Trigger animation
                     setTimeout(() => card.classList.add('visible'), 50);
